@@ -1,10 +1,10 @@
 import Note
 
-class Service:
+
+class NoteManager:
     def __init__(self, filename):
         self.filename = filename
         self.notes = []
-
 
     def load_notes(self):
         try:
@@ -14,16 +14,13 @@ class Service:
         except FileNotFoundError:
             pass
 
-
     def save_notes(self):
         with open(self.filename, "w") as f:
             f.write("\n".join([note.to_json() for note in self.notes]))
 
-
     def add_note(self, note):
         self.notes.append(note)
         self.save_notes()
-
 
     def get_note(self, id):
         for note in self.notes:
@@ -31,6 +28,13 @@ class Service:
                 return note
         return None
 
+    def delete_note(self, id):
+        for i, n in enumerate(self.notes):
+            if n.id == id:
+                del self.notes[i]
+                self.save_notes()
+                return
+        raise ValueError("Note not found")
 
     def update_note(self, note):
         for i, n in enumerate(self.notes):
@@ -40,11 +44,7 @@ class Service:
                 return
         raise ValueError("Note not found")
 
+    def get_all_notes(self):
+        return self.notes
 
-    def delete_note(self, id):
-        for i, n in enumerate(self.notes):
-            if n.id == id:
-                del self.notes[i]
-                self.save_notes()
-                return
-        raise ValueError("Note not found")
+
